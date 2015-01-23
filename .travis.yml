@@ -6,5 +6,8 @@ go:
     - 1.4
     - tip
 
+install:
+    - sudo pip install Pygments
+
 script:
     - go test -v -bench=.
