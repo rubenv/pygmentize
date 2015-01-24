@@ -160,6 +160,7 @@ var DefaultHtmlFormatter = &HtmlFormatter{
 	Classes: map[string]string{
 		"Comment":         "c",
 		"Comment.Preproc": "cp",
+		"Comment.Single":  "cs",
 	},
 }
 

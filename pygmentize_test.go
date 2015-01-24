@@ -23,12 +23,12 @@ func TestPhp(t *testing.T) {
 	}
 
 	expected := `<span class="c cp"><?php</span>
-<span class="c">// Keys can be obtained in the Mollom site manager.
+<span class="c cs">// Keys can be obtained in the Mollom site manager.
 </span>$public = "your-public-key";
 $private = 'yoür-private-key';
 $mollom = new Zend_Service_Mollom($public, $private);
 
-<span class="c">// Mandarin: 官話
+<span class="c cs">// Mandarin: 官話
 </span>`
 
 	if out != expected {
