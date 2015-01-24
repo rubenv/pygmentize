@@ -17,18 +17,20 @@ $mollom = new Zend_Service_Mollom($public, $private);
 `
 
 func TestPhp(t *testing.T) {
-	out, err := Highlight(phpSample, DefaultHtmlFormatter)
+	f := NewHtmlFormatter()
+	f.Strict = true
+	out, err := Highlight(phpSample, f)
 	if err != nil {
 		t.Error(err)
 	}
 
-	expected := `<span class="c cp"><?php</span>
-<span class="c cs">// Keys can be obtained in the Mollom site manager.
-</span>$public = "your-public-key";
-$private = 'yoür-private-key';
-$mollom = new Zend_Service_Mollom($public, $private);
+	expected := `<span class="c cp"><?php</span><span class="t">
+</span><span class="c cs">// Keys can be obtained in the Mollom site manager.
+</span><span class="n nv">$public</span><span class="t"> </span><span class="o">=</span><span class="t"> </span><span class="l ls lsd">"</span><span class="l ls lsd">your-public-key</span><span class="l ls lsd">"</span><span class="p">;</span><span class="t">
+</span><span class="n nv">$private</span><span class="t"> </span><span class="o">=</span><span class="t"> </span><span class="l ls lss">'yoür-private-key'</span><span class="p">;</span><span class="t">
+</span><span class="n nv">$mollom</span><span class="t"> </span><span class="o">=</span><span class="t"> </span><span class="k">new</span><span class="t"> </span><span class="n no">Zend_Service_Mollom</span><span class="p">(</span><span class="n nv">$public</span><span class="p">,</span><span class="t"> </span><span class="n nv">$private</span><span class="p">);</span><span class="t">
 
-<span class="c cs">// Mandarin: 官話
+</span><span class="c cs">// Mandarin: 官話
 </span>`
 
 	if out != expected {
@@ -54,6 +56,6 @@ func BenchmarkParse(b *testing.B) {
 	}
 
 	for n := 0; n < b.N; n++ {
-		parse(bytes.NewReader(out), DefaultHtmlFormatter)
+		parse(bytes.NewReader(out), NewHtmlFormatter())
 	}
 }

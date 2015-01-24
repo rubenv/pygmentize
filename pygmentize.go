@@ -28,7 +28,7 @@ func (t Token) String() string {
 }
 
 type Formatter interface {
-	Format(token Token, input string) string
+	Format(token Token, input string) (string, error)
 }
 
 func Highlight(code string, formatter Formatter) (string, error) {
@@ -103,7 +103,11 @@ func parse(reader io.Reader, formatter Formatter) (string, error) {
 			}
 		}
 
-		out.WriteString(formatter.Format(token, str.String()))
+		formatted, err := formatter.Format(token, str.String())
+		if err != nil {
+			return "", err
+		}
+		out.WriteString(formatted)
 	}
 
 	err := scanner.Err()
@@ -114,27 +118,61 @@ func parse(reader io.Reader, formatter Formatter) (string, error) {
 	return out.String(), nil
 }
 
+var DefaultClasses = map[string]string{
+	"Comment":               "c",
+	"Comment.Preproc":       "cp",
+	"Comment.Single":        "cs",
+	"Keyword":               "k",
+	"Literal":               "l",
+	"Literal.String":        "ls",
+	"Literal.String.Double": "lsd",
+	"Literal.String.Single": "lss",
+	"Name":                  "n",
+	"Name.Other":            "no",
+	"Name.Variable":         "nv",
+	"Operator":              "o",
+	"Punctuation":           "p",
+	"Text":                  "t",
+}
+
 type HtmlFormatter struct {
 	Classes map[string]string
 	Prefix  string
+	Strict  bool
 }
 
-func (f *HtmlFormatter) Format(token Token, input string) string {
+func NewHtmlFormatter() *HtmlFormatter {
+	return &HtmlFormatter{
+		Classes: DefaultClasses,
+	}
+}
+
+func (f *HtmlFormatter) Format(token Token, input string) (string, error) {
 	var key bytes.Buffer
+	var err error
 	c := ""
 
 	key.WriteString(token.Type)
-	c = f.tryTokenClass(key.String(), c)
+	c, err = f.tryTokenClass(key.String(), c)
+	if err != nil {
+		return "", err
+	}
 
 	key.WriteString(".")
 	key.WriteString(token.Subtype)
-	c = f.tryTokenClass(key.String(), c)
+	c, err = f.tryTokenClass(key.String(), c)
+	if err != nil {
+		return "", err
+	}
 
 	key.WriteString(".")
 	key.WriteString(token.Detail)
-	c = f.tryTokenClass(key.String(), c)
+	c, err = f.tryTokenClass(key.String(), c)
+	if err != nil {
+		return "", err
+	}
 
-	return f.formatSpan(c, input)
+	return f.formatSpan(c, input), nil
 }
 
 func (f *HtmlFormatter) formatSpan(c, input string) string {
@@ -145,33 +183,29 @@ func (f *HtmlFormatter) formatSpan(c, input string) string {
 	}
 }
 
-func (f *HtmlFormatter) tryTokenClass(tokenType, prev string) string {
+func (f *HtmlFormatter) tryTokenClass(tokenType, prev string) (string, error) {
 	c, exists := f.Classes[tokenType]
+	if f.Strict && !exists && !strings.HasSuffix(tokenType, ".") {
+		return "", fmt.Errorf("Unknown token type: %s", tokenType)
+	}
+
 	if exists && prev != "" {
-		return prev + " " + c
+		return prev + " " + c, nil
 	} else if exists {
-		return c
+		return c, nil
 	} else {
-		return prev
+		return prev, nil
 	}
 }
 
-var DefaultHtmlFormatter = &HtmlFormatter{
-	Classes: map[string]string{
-		"Comment":         "c",
-		"Comment.Preproc": "cp",
-		"Comment.Single":  "cs",
-	},
-}
-
 var DebugFormatter = &debugFormatter{
-	HtmlFormatter: DefaultHtmlFormatter,
+	HtmlFormatter: NewHtmlFormatter(),
 }
 
 type debugFormatter struct {
 	*HtmlFormatter
 }
 
-func (f *debugFormatter) Format(token Token, input string) string {
-	return f.formatSpan(token.String(), input)
+func (f *debugFormatter) Format(token Token, input string) (string, error) {
+	return f.formatSpan(token.String(), input), nil
 }
