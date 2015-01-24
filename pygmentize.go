@@ -116,6 +116,7 @@ func parse(reader io.Reader, formatter Formatter) (string, error) {
 
 type HtmlFormatter struct {
 	Classes map[string]string
+	Prefix  string
 }
 
 func (f *HtmlFormatter) Format(token Token, input string) string {
@@ -140,7 +141,7 @@ func (f *HtmlFormatter) formatSpan(c, input string) string {
 	if c == "" {
 		return input
 	} else {
-		return fmt.Sprintf(`<span class="%s">%s</span>`, c, input)
+		return fmt.Sprintf(`<span class="%s%s">%s</span>`, f.Prefix, c, input)
 	}
 }
 
