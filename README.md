@@ -19,6 +19,31 @@ import "github.com/rubenv/pygmentize"
 
 ## Usage
 
+```go
+var DebugFormatter = &debugFormatter{
+	HtmlFormatter: NewHtmlFormatter(),
+}
+```
+
+```go
+var DefaultClasses = map[string]string{
+	"Comment":               "c",
+	"Comment.Preproc":       "cp",
+	"Comment.Single":        "cs",
+	"Keyword":               "k",
+	"Literal":               "l",
+	"Literal.String":        "ls",
+	"Literal.String.Double": "lsd",
+	"Literal.String.Single": "lss",
+	"Name":                  "n",
+	"Name.Other":            "no",
+	"Name.Variable":         "nv",
+	"Operator":              "o",
+	"Punctuation":           "p",
+	"Text":                  "t",
+}
+```
+
 #### func  Highlight
 
 ```go
@@ -29,7 +54,7 @@ func Highlight(code string, formatter Formatter) (string, error)
 
 ```go
 type Formatter interface {
-	Format(token Token, input string) string
+	Format(token Token, input string) (string, error)
 }
 ```
 
@@ -38,14 +63,23 @@ type Formatter interface {
 
 ```go
 type HtmlFormatter struct {
+	Classes map[string]string
+	Prefix  string
+	Strict  bool
 }
 ```
 
 
+#### func  NewHtmlFormatter
+
+```go
+func NewHtmlFormatter() *HtmlFormatter
+```
+
 #### func (*HtmlFormatter) Format
 
 ```go
-func (f *HtmlFormatter) Format(token Token, input string) string
+func (f *HtmlFormatter) Format(token Token, input string) (string, error)
 ```
 
 #### type Token
