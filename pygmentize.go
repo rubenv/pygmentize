@@ -147,7 +147,9 @@ func (f *HtmlFormatter) formatSpan(c, input string) string {
 
 func (f *HtmlFormatter) tryTokenClass(tokenType, prev string) string {
 	c, exists := f.Classes[tokenType]
-	if exists {
+	if exists && prev != "" {
+		return prev + " " + c
+	} else if exists {
 		return c
 	} else {
 		return prev
@@ -155,7 +157,10 @@ func (f *HtmlFormatter) tryTokenClass(tokenType, prev string) string {
 }
 
 var DefaultHtmlFormatter = &HtmlFormatter{
-	Classes: map[string]string{},
+	Classes: map[string]string{
+		"Comment":         "c",
+		"Comment.Preproc": "cp",
+	},
 }
 
 var DebugFormatter = &debugFormatter{
