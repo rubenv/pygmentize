@@ -38,6 +38,20 @@ func TestPhp(t *testing.T) {
 	}
 }
 
+func TestLanguage(t *testing.T) {
+	out, err := HighlightLanguage(`console.log("Hello");`, "js", NewHtmlFormatter())
+	if err != nil {
+		t.Error(err)
+	}
+
+	expected := `<span class="n no">console</span><span class="p">.</span><span class="n no">log</span><span class="p">(</span><span class="l ls lsd">"Hello"</span><span class="p">)</span><span class="p">;</span><span class="t">
+</span>`
+
+	if out != expected {
+		t.Errorf("Bad formatting, expected:\n%s\n\nGot:\n%s", expected, out)
+	}
+}
+
 func TestDebug(t *testing.T) {
 	out, err := Highlight(phpSample, DebugFormatter)
 	if err != nil {

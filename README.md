@@ -53,6 +53,16 @@ func Highlight(code string, formatter Formatter) (string, error)
 ```
 Highlight a piece of code.
 
+#### func  HighlightLanguage
+
+```go
+func HighlightLanguage(code, language string, formatter Formatter) (string, error)
+```
+Highlight a piece of code, with a given language.
+
+See http://pygments.org/docs/lexers/ for a list of languages (look under "Short
+names").
+
 #### type Formatter
 
 ```go

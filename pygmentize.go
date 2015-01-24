@@ -33,7 +33,21 @@ type Formatter interface {
 
 // Highlight a piece of code.
 func Highlight(code string, formatter Formatter) (string, error) {
-	cmd := exec.Command("pygmentize", "-f", "raw")
+	return HighlightLanguage(code, "", formatter)
+}
+
+// Highlight a piece of code, with a given language.
+//
+// See http://pygments.org/docs/lexers/ for a list of languages (look under "Short names").
+func HighlightLanguage(code, language string, formatter Formatter) (string, error) {
+	args := []string{
+		"-f", "raw",
+	}
+	if language != "" {
+		args = append(args, "-l", language)
+	}
+
+	cmd := exec.Command("pygmentize", args...)
 	cmd.Stdin = strings.NewReader(code)
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
