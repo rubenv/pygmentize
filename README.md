@@ -24,6 +24,7 @@ var DebugFormatter = &debugFormatter{
 	HtmlFormatter: NewHtmlFormatter(),
 }
 ```
+Formatter that outputs HTML with token types as the class name.
 
 ```go
 var DefaultClasses = map[string]string{
@@ -43,12 +44,14 @@ var DefaultClasses = map[string]string{
 	"Text":                  "t",
 }
 ```
+Default token -> class mapping.
 
 #### func  Highlight
 
 ```go
 func Highlight(code string, formatter Formatter) (string, error)
 ```
+Highlight a piece of code.
 
 #### type Formatter
 
@@ -63,18 +66,25 @@ type Formatter interface {
 
 ```go
 type HtmlFormatter struct {
+	// Maps of token types to class names
 	Classes map[string]string
-	Prefix  string
-	Strict  bool
+
+	// Prefix added to each class
+	Prefix string
+
+	// Fail on unmapped token types?
+	Strict bool
 }
 ```
 
+Highlights by adding <span> tags.
 
 #### func  NewHtmlFormatter
 
 ```go
 func NewHtmlFormatter() *HtmlFormatter
 ```
+Create a new HtmlFormatter with default class mapping.
 
 #### func (*HtmlFormatter) Format
 
