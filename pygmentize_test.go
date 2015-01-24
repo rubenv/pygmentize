@@ -17,12 +17,23 @@ $mollom = new Zend_Service_Mollom($public, $private);
 `
 
 func TestPhp(t *testing.T) {
-	_, err := Highlight(phpSample, &HtmlFormatter{})
+	out, err := Highlight(phpSample, DebugFormatter)
 	if err != nil {
 		t.Error(err)
 	}
 
-	//log.Println(out)
+	expected := `<?php
+// Keys can be obtained in the Mollom site manager.
+$public = "your-public-key";
+$private = 'yoür-private-key';
+$mollom = new Zend_Service_Mollom($public, $private);
+
+// Mandarin: 官話
+`
+
+	if out != expected {
+		t.Errorf("Bad formatting, expected:\n%s\n\nGot:\n%s", expected, out)
+	}
 }
 
 func BenchmarkParse(b *testing.B) {
@@ -34,6 +45,6 @@ func BenchmarkParse(b *testing.B) {
 	}
 
 	for n := 0; n < b.N; n++ {
-		parse(bytes.NewReader(out), &HtmlFormatter{})
+		parse(bytes.NewReader(out), DefaultHtmlFormatter)
 	}
 }

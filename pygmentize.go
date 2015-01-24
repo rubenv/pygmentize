@@ -24,7 +24,7 @@ func (t Token) String() string {
 	if t.Detail != "" {
 		result += "." + t.Detail
 	}
-	return "{" + result + "}"
+	return result
 }
 
 type Formatter interface {
@@ -115,8 +115,56 @@ func parse(reader io.Reader, formatter Formatter) (string, error) {
 }
 
 type HtmlFormatter struct {
+	Classes map[string]string
 }
 
 func (f *HtmlFormatter) Format(token Token, input string) string {
-	return input
+	var key bytes.Buffer
+	c := ""
+
+	key.WriteString(token.Type)
+	c = f.tryTokenClass(key.String(), c)
+
+	key.WriteString(".")
+	key.WriteString(token.Subtype)
+	c = f.tryTokenClass(key.String(), c)
+
+	key.WriteString(".")
+	key.WriteString(token.Detail)
+	c = f.tryTokenClass(key.String(), c)
+
+	return f.formatSpan(c, input)
+}
+
+func (f *HtmlFormatter) formatSpan(c, input string) string {
+	if c == "" {
+		return input
+	} else {
+		return fmt.Sprintf(`<span class="%s">%s</span>`, c, input)
+	}
+}
+
+func (f *HtmlFormatter) tryTokenClass(tokenType, prev string) string {
+	c, exists := f.Classes[tokenType]
+	if exists {
+		return c
+	} else {
+		return prev
+	}
+}
+
+var DefaultHtmlFormatter = &HtmlFormatter{
+	Classes: map[string]string{},
+}
+
+var DebugFormatter = &debugFormatter{
+	HtmlFormatter: DefaultHtmlFormatter,
+}
+
+type debugFormatter struct {
+	*HtmlFormatter
+}
+
+func (f *debugFormatter) Format(token Token, input string) string {
+	return f.formatSpan(token.String(), input)
 }
