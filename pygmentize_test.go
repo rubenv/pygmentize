@@ -2,6 +2,7 @@ package pygmentize
 
 import (
 	"bytes"
+	"log"
 	"os/exec"
 	"strings"
 	"testing"
@@ -21,6 +22,14 @@ $mollom = new Zend_Service_Mollom($public, $private);
 
 // Mandarin: 官話
 `
+
+func TestGo(t *testing.T) {
+	out, err := HighlightLanguage(`fmt.Println("hello world")`, "go", newStrictHtmlFormatter())
+	if err != nil {
+		t.Error(err)
+	}
+	log.Println(out)
+}
 
 func TestPhp(t *testing.T) {
 	out, err := Highlight(phpSample, newStrictHtmlFormatter())
