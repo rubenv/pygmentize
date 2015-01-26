@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/rubenv/pygmentize.svg?branch=master)](https://travis-ci.org/rubenv/pygmentize) [![GoDoc](https://godoc.org/github.com/rubenv/pygmentize?status.png)](https://godoc.org/github.com/rubenv/pygmentize)
 
-Work in progress module that wraps pygments for use with Go.
+Pygments wrapper for Go.
 
 http://pygments.org/
 

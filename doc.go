@@ -1,5 +1,5 @@
 /*
-Work in progress module that wraps pygments for use with Go.
+Pygments wrapper for Go.
 
 http://pygments.org/
 
