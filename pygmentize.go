@@ -102,6 +102,9 @@ func parse(reader io.Reader, formatter Formatter) (string, error) {
 				if next == 'n' {
 					str.WriteString("\n")
 					i += 1
+				} else if next == '\'' {
+					str.WriteString("'")
+					i += 1
 				} else if next == 'x' {
 					c := html.UnescapeString("&#" + valueIn[i+1:i+4] + ";")
 					str.WriteString(c)

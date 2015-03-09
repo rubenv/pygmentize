@@ -20,7 +20,7 @@ To highlight a piece of code, use:
 
 This outputs:
 
-    <span class="n no">fmt</span><span class="p">.</span><span class="n no">Println</span><span class="p">(</span><span class="l ls">"hello world"</span><span class="p">)</span><span class="t">
+    <span class="n no">fmt</span><span class="p">.</span><span class="n no">Println</span><span class="p">(</span><span class="l ls">&#34;hello world&#34;</span><span class="p">)</span><span class="t">
     </span>
 
 Apply CSS to your liking to get the desired visual effect.

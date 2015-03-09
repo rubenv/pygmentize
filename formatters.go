@@ -3,6 +3,7 @@ package pygmentize
 import (
 	"bytes"
 	"fmt"
+	"html"
 	"strings"
 )
 
@@ -76,7 +77,7 @@ func (f *HtmlFormatter) Format(token Token, input string) (string, error) {
 		return "", err
 	}
 
-	return f.formatSpan(c, input), nil
+	return f.formatSpan(c, html.EscapeString(input)), nil
 }
 
 func (f *HtmlFormatter) formatSpan(c, input string) string {
