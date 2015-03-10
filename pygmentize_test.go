@@ -37,14 +37,14 @@ func TestPhp(t *testing.T) {
 		t.Error(err)
 	}
 
-	expected := `<span class="c cp">&lt;?php</span><span class="t">
-</span><span class="c cs">// Keys can be obtained in the Mollom site manager.
-</span><span class="n nv">$public</span><span class="t"> </span><span class="o">=</span><span class="t"> </span><span class="l ls lsd">&#34;</span><span class="l ls lsd">your-public-key</span><span class="l ls lsd">&#34;</span><span class="p">;</span><span class="t">
-</span><span class="n nv">$private</span><span class="t"> </span><span class="o">=</span><span class="t"> </span><span class="l ls lss">&#39;yoür-private-key&#39;</span><span class="p">;</span><span class="t">
-</span><span class="n nv">$mollom</span><span class="t"> </span><span class="o">=</span><span class="t"> </span><span class="k">new</span><span class="t"> </span><span class="n no">Zend_Service_Mollom</span><span class="p">(</span><span class="n nv">$public</span><span class="p">,</span><span class="t"> </span><span class="n nv">$private</span><span class="p">);</span><span class="t">
-
-</span><span class="c cs">// Mandarin: 官話
-</span>`
+	expected := `<span class="c cp">&lt;?php</span>
+<span class="c cs">// Keys can be obtained in the Mollom site manager.</span>
+<span class="n nv">$public</span><span class="t"> </span><span class="o">=</span><span class="t"> </span><span class="l ls lsd">&#34;</span><span class="l ls lsd">your-public-key</span><span class="l ls lsd">&#34;</span><span class="p">;</span>
+<span class="n nv">$private</span><span class="t"> </span><span class="o">=</span><span class="t"> </span><span class="l ls lss">&#39;yoür-private-key&#39;</span><span class="p">;</span>
+<span class="n nv">$mollom</span><span class="t"> </span><span class="o">=</span><span class="t"> </span><span class="k">new</span><span class="t"> </span><span class="n no">Zend_Service_Mollom</span><span class="p">(</span><span class="n nv">$public</span><span class="p">,</span><span class="t"> </span><span class="n nv">$private</span><span class="p">);</span><span class="t">
+</span>
+<span class="c cs">// Mandarin: 官話</span>
+`
 
 	if out != expected {
 		t.Errorf("Bad formatting, expected:\n%s\n\nGot:\n%s", expected, out)
@@ -57,8 +57,8 @@ func TestLanguage(t *testing.T) {
 		t.Error(err)
 	}
 
-	expected := `<span class="n no">console</span><span class="p">.</span><span class="n no">log</span><span class="p">(</span><span class="l ls lsd">&#34;Hello&#34;</span><span class="p">)</span><span class="p">;</span><span class="t">
-</span>`
+	expected := `<span class="n no">console</span><span class="p">.</span><span class="n no">log</span><span class="p">(</span><span class="l ls lsd">&#34;Hello&#34;</span><span class="p">)</span><span class="p">;</span>
+`
 
 	if out != expected {
 		t.Errorf("Bad formatting, expected:\n%s\n\nGot:\n%s", expected, out)

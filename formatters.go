@@ -81,10 +81,18 @@ func (f *HtmlFormatter) Format(token Token, input string) (string, error) {
 }
 
 func (f *HtmlFormatter) formatSpan(c, input string) string {
+	nl := ""
+	if strings.HasSuffix(input, "\n") {
+		nl = "\n"
+		input = input[0 : len(input)-1]
+	}
+	if input == "" {
+		return nl
+	}
 	if c == "" {
 		return input
 	} else {
-		return fmt.Sprintf(`<span class="%s%s">%s</span>`, f.Prefix, c, input)
+		return fmt.Sprintf(`<span class="%s%s">%s</span>%s`, f.Prefix, c, input, nl)
 	}
 }
 
