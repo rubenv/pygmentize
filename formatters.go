@@ -92,7 +92,10 @@ func (f *HtmlFormatter) formatSpan(c, input string) string {
 	if c == "" {
 		return input
 	} else {
-		return fmt.Sprintf(`<span class="%s%s">%s</span>%s`, f.Prefix, c, input, nl)
+		lines := strings.Split(input, "\n")
+		input = strings.Join(lines, fmt.Sprintf("</span>\n<span class=\"%s%s\">", f.Prefix, c))
+		out := fmt.Sprintf(`<span class="%s%s">%s</span>%s`, f.Prefix, c, input, nl)
+		return strings.Replace(out, fmt.Sprintf(`<span class="%s%s"></span>`, f.Prefix, c), "", -1)
 	}
 }
 
