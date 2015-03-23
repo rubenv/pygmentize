@@ -2,7 +2,6 @@ package pygmentize
 
 import (
 	"bytes"
-	"log"
 	"os/exec"
 	"strings"
 	"testing"
@@ -23,16 +22,22 @@ $mollom = new Zend_Service_Mollom($public, $private);
 // Mandarin: 官話
 `
 
+var phpSample2 = `// Keys can be obtained in the Mollom site manager.
+$public = 'your-public-key';
+$private = 'your-private-key';
+$mollom = new Zend_Service_Mollom($public, $private);
+`
+
 func TestGo(t *testing.T) {
 	out, err := HighlightLanguage(`fmt.Println("hello world")`, "go", newStrictHtmlFormatter())
 	if err != nil {
 		t.Error(err)
 	}
-	log.Println(out)
+	t.Log(out)
 }
 
 func TestPhp(t *testing.T) {
-	out, err := Highlight(phpSample, newStrictHtmlFormatter())
+	out, err := HighlightLanguage(phpSample, "php", newStrictHtmlFormatter())
 	if err != nil {
 		t.Error(err)
 	}
@@ -44,6 +49,23 @@ func TestPhp(t *testing.T) {
 <span class="n nv">$mollom</span><span class="t"> </span><span class="o">=</span><span class="t"> </span><span class="k">new</span><span class="t"> </span><span class="n no">Zend_Service_Mollom</span><span class="p">(</span><span class="n nv">$public</span><span class="p">,</span><span class="t"> </span><span class="n nv">$private</span><span class="p">);</span>
 
 <span class="c cs">// Mandarin: 官話</span>
+`
+
+	if out != expected {
+		t.Errorf("Bad formatting, expected:\n%s\n\nGot:\n%s", expected, out)
+	}
+}
+
+func TestPhp2(t *testing.T) {
+	out, err := HighlightLanguage(phpSample2, "php", newStrictHtmlFormatter())
+	if err != nil {
+		t.Error(err)
+	}
+
+	expected := `<span class="c cs">// Keys can be obtained in the Mollom site manager.</span>
+<span class="n nv">$public</span><span class="t"> </span><span class="o">=</span><span class="t"> </span><span class="l ls lss">&#39;your-public-key&#39;</span><span class="p">;</span>
+<span class="n nv">$private</span><span class="t"> </span><span class="o">=</span><span class="t"> </span><span class="l ls lss">&#39;your-private-key&#39;</span><span class="p">;</span>
+<span class="n nv">$mollom</span><span class="t"> </span><span class="o">=</span><span class="t"> </span><span class="k">new</span><span class="t"> </span><span class="n no">Zend_Service_Mollom</span><span class="p">(</span><span class="n nv">$public</span><span class="p">,</span><span class="t"> </span><span class="n nv">$private</span><span class="p">);</span>
 `
 
 	if out != expected {
@@ -66,7 +88,7 @@ func TestLanguage(t *testing.T) {
 }
 
 func TestErlang(t *testing.T) {
-	_, err := HighlightLanguage(`-module(factorial).
+	out, err := HighlightLanguage(`-module(factorial).
 -export([fact/1]).
  
 fact(0) -> 1;
@@ -74,6 +96,8 @@ fact(N) -> N * fact(N-1).`, "erlang", newStrictHtmlFormatter())
 	if err != nil {
 		t.Error(err)
 	}
+
+	t.Log(out)
 }
 
 func TestScala(t *testing.T) {
@@ -132,6 +156,6 @@ func BenchmarkParse(b *testing.B) {
 	}
 
 	for n := 0; n < b.N; n++ {
-		parse(bytes.NewReader(out), NewHtmlFormatter())
+		parse(bytes.NewReader(out), NewHtmlFormatter(), false)
 	}
 }

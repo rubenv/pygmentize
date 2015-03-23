@@ -40,6 +40,12 @@ func Highlight(code string, formatter Formatter) (string, error) {
 //
 // See http://pygments.org/docs/lexers/ for a list of languages (look under "Short names").
 func HighlightLanguage(code, language string, formatter Formatter) (string, error) {
+	skip_first := false
+	if language == "php" && !strings.Contains(code, "<?php") {
+		code = fmt.Sprintf("<?php\n%s", code)
+		skip_first = true
+	}
+
 	args := []string{
 		"-f", "raw",
 	}
@@ -59,7 +65,7 @@ func HighlightLanguage(code, language string, formatter Formatter) (string, erro
 		return "", err
 	}
 
-	out, err := parse(stdout, formatter)
+	out, err := parse(stdout, formatter, skip_first)
 	if err != nil {
 		return "", err
 	}
@@ -71,7 +77,7 @@ func HighlightLanguage(code, language string, formatter Formatter) (string, erro
 	return out, nil
 }
 
-func parse(reader io.Reader, formatter Formatter) (string, error) {
+func parse(reader io.Reader, formatter Formatter, skip_first bool) (string, error) {
 	var out bytes.Buffer
 	scanner := bufio.NewScanner(reader)
 	for scanner.Scan() {
@@ -121,7 +127,20 @@ func parse(reader io.Reader, formatter Formatter) (string, error) {
 			}
 		}
 
-		formatted, err := formatter.Format(token, str.String())
+		s := str.String()
+		if skip_first {
+			if !strings.Contains(s, "\n") {
+				continue
+			} else {
+				skip_first = false
+				s = s[strings.Index(s, "\n")+1:]
+				if s == "" {
+					continue
+				}
+			}
+		}
+
+		formatted, err := formatter.Format(token, s)
 		if err != nil {
 			return "", err
 		}

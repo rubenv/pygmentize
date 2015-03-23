@@ -29,6 +29,7 @@ var DefaultClasses = map[string]string{
 	"Name.Namespace":         "nn",
 	"Name.Variable":          "nv",
 	"Operator":               "o",
+	"Other":                  "r",
 	"Punctuation":            "p",
 	"Text":                   "t",
 }
